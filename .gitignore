@@ -1,3 +1,5 @@
 .env
 mongodb
 pg-data
+*.tar
+*.tar.gz

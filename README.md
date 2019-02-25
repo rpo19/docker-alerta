@@ -1,3 +1,8 @@
+Modifications
+===============
+- Image is based on alpine
+- nginx is updated and returns relative redirects
+
 What is Alerta?
 ===============
 

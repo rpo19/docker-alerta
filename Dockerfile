@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.6-alpine
 
 LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>" \
       org.label-schema.build-date=${BUILD_DATE} \
@@ -21,20 +21,9 @@ ENV INSTALL_PLUGINS      ""
 ENV PYTHONUNBUFFERED     1
 ENV HEARTBEAT_SEVERITY major
 
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      gettext-base \
-      libffi-dev \
-      libldap2-dev \
-      libpq-dev \
-      libsasl2-dev \
-      mongodb-clients \
-      nginx-light \
-      postgresql-client \
-      python3-dev \
-      supervisor \
-      wget \
- && rm -rf /var/lib/apt/lists/*
+RUN apk update
+RUN apk add --no-cache git libffi-dev nginx wget bash supervisor postgresql-dev gettext
+RUN apk add --virtual build-dependencies python-dev build-base
 
 RUN pip install --no-cache-dir virtualenv \
  && virtualenv --python=python3 /venv \
@@ -49,7 +38,7 @@ COPY slash/ /
 
 RUN chgrp -R 0 /app /venv /web \
  && chmod -R g=u /app /venv /web \
- && useradd -r -d /app -u 1001 -g 0 alerta
+ && adduser -S -h /app -u 1001 -G root alerta
 
 USER 1001
 EXPOSE 8080
